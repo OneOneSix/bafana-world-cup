@@ -19,7 +19,7 @@
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
   body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.6;}
   .hero{background:var(--bg2);border-bottom:1px solid var(--border);padding:3rem 2rem 2rem;text-align:center;position:relative;overflow:hidden;}
-  .hero::before{content:'WC 2026';position:absolute;font-family:var(--font-display);font-size:22vw;color:rgba(255,255,255,0.022);top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;}
+  .hero::before{content:'2026';position:absolute;font-family:var(--font-display);font-size:22vw;color:rgba(255,255,255,0.022);top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;}
   .hero h1{font-family:var(--font-display);font-size:clamp(2.8rem,7vw,5.5rem);letter-spacing:.04em;line-height:1;color:#fff;margin-bottom:.5rem;}
   .hero h1 span{color:var(--green);}
   .hero-sub{font-size:13px;color:var(--muted);font-family:var(--font-mono);margin-bottom:2rem;}
@@ -211,7 +211,7 @@ function redistribute(data) {
 }
 
 function badgeClass(i){return i<3?'top-badge':i<10?'mid-badge':'bot-badge';}
-function barCol(i){return i<3?'#EF9F27':i<10?'#378ADD':'#888780';}
+function barCol(i){return i<3?'#00C27C':i<10?'#378ADD':'#888780';}
 
 function buildList(elId, data, isTop) {
   const el = document.getElementById(elId);
