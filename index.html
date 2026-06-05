@@ -115,6 +115,15 @@
 const eliminated = [];
 
 // Base prize probabilities from 100,000 Monte Carlo simulations
+const flags = {
+  "France":"fr","Argentina":"ar","Spain":"es","England":"gb-eng","Portugal":"pt",
+  "Germany":"de","Morocco":"ma","Netherlands":"nl","Belgium":"be","Senegal":"sn",
+  "Uruguay":"uy","Switzerland":"ch","Japan":"jp","Ecuador":"ec","South Korea":"kr",
+  "Turkey":"tr","Australia":"au","Canada":"ca","Algeria":"dz","Egypt":"eg",
+  "Ivory Coast":"ci","Czechia":"cz","Panama":"pa","Sweden":"se","Paraguay":"py",
+  "Tunisia":"tn","Iraq":"iq","Bosnia":"ba","Saudi Arabia":"sa","Cape Verde":"cv",
+  "Curacao":"cw","Ghana":"gh","Haiti":"ht","New Zealand":"nz",
+};
 const topPrize = [
   {player:"Vlad",   team:"France",      pct:16.37},
   {player:"Nando",  team:"Argentina",   pct:14.56},
@@ -231,7 +240,7 @@ function buildList(elId, data, isTop) {
     row.innerHTML = `
       <div class="rank-badge ${isOut ? 'bot-badge' : badgeClass(i)}">${isOut ? '—' : i+1}</div>
       <div class="player-name ${isOut ? 'eliminated' : ''}">${d.player}</div>
-      <span class="team-tag ${isTop?'tag-top':'tag-bot'} ${isOut?'eliminated':''}">${d.team}</span>
+      <span class="team-tag ${isTop?'tag-top':'tag-bot'} ${isOut?'eliminated':''}">${d.team} ${flags[d.team]?`<img src="https://flagcdn.com/16x12/${flags[d.team]}.png" alt="${d.team}" style="vertical-align:middle;margin-left:3px;border-radius:1px;">`:''}</span>
       <div class="bar-wrap">
         <div class="bar-bg"><div class="bar-fill" style="width:${isOut?0:pct.toFixed(1)}%;background:${isOut?'#444':barCol(i)};"></div></div>
         <div class="bar-val ${isOut?'eliminated':''}">${isOut ? 'eliminated' : d.livePct.toFixed(2)+'%'}</div>
