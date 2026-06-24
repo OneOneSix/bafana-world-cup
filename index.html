@@ -120,7 +120,7 @@
 // ELIMINATIONS — update this list as teams get knocked out
 // e.g. const eliminated = ["Haiti", "New Zealand", "Saudi Arabia"];
 // ============================================================
-const eliminated = ["Haiti", "Turkey", "Tunisia", "Jordan"];
+const eliminated = ["Haiti", "Turkey", "Tunisia", "Jordan", "Panama"];
 
 // Base prize probabilities from 100,000 Monte Carlo simulations
 const flags = {
@@ -133,43 +133,43 @@ const flags = {
   "Curacao":"cw","Ghana":"gh","Haiti":"ht","New Zealand":"nz",
 };
 const topPrize = [
-  {player:"Vlad",   team:"France",      pct:18.47},
-  {player:"Gat",    team:"Spain",       pct:16.09},
-  {player:"Nando",  team:"Argentina",   pct:15.62},
-  {player:"Chill",  team:"England",     pct:11.30},
-  {player:"Eddie",  team:"Germany",     pct:6.38},
-  {player:"Pops",   team:"Morocco",     pct:5.95},
-  {player:"Rafiki", team:"Portugal",    pct:5.88},
-  {player:"Danny",  team:"Netherlands", pct:5.01},
-  {player:"Josue",  team:"Japan",       pct:3.97},
-  {player:"Erik",   team:"Belgium",     pct:3.95},
-  {player:"Hugo",   team:"Switzerland", pct:2.66},
-  {player:"Marco",  team:"Uruguay",     pct:2.30},
-  {player:"Nick",   team:"South Korea", pct:0.89},
-  {player:"JG",     team:"Australia",   pct:0.66},
-  {player:"Jeff",   team:"Ecuador",     pct:0.58},
-  {player:"Diego",  team:"Senegal",     pct:0.29},
+  {player:"Vlad",   team:"France",      pct:18.63},
+  {player:"Nando",  team:"Argentina",   pct:15.74},
+  {player:"Gat",    team:"Spain",       pct:14.72},
+  {player:"Chill",  team:"England",     pct:10.94},
+  {player:"Rafiki", team:"Portugal",    pct:6.65},
+  {player:"Eddie",  team:"Germany",     pct:6.47},
+  {player:"Pops",   team:"Morocco",     pct:6.08},
+  {player:"Danny",  team:"Netherlands", pct:5.17},
+  {player:"Erik",   team:"Belgium",     pct:3.98},
+  {player:"Josue",  team:"Japan",       pct:3.95},
+  {player:"Hugo",   team:"Switzerland", pct:2.72},
+  {player:"Marco",  team:"Uruguay",     pct:2.33},
+  {player:"Nick",   team:"South Korea", pct:0.98},
+  {player:"Jeff",   team:"Ecuador",     pct:0.63},
+  {player:"JG",     team:"Australia",   pct:0.62},
+  {player:"Diego",  team:"Senegal",     pct:0.39},
   {player:"Snappy", team:"Turkey",      pct:0},
 ];
 const botPrize = [
-  {player:"Josue",  team:"Egypt",        pct:26.86},
-  {player:"Snappy", team:"Canada",       pct:17.11},
-  {player:"Chill",  team:"Algeria",      pct:16.35},
-  {player:"Erik",   team:"Sweden",       pct:13.25},
-  {player:"Hugo",   team:"Ivory Coast",  pct:11.49},
-  {player:"Marco",  team:"Panama",       pct:4.86},
-  {player:"Nando",  team:"Paraguay",     pct:3.71},
-  {player:"Nick",   team:"Czechia",      pct:2.15},
+  {player:"Josue",  team:"Egypt",        pct:28.43},
+  {player:"Snappy", team:"Canada",       pct:18.02},
+  {player:"Chill",  team:"Algeria",      pct:16.44},
+  {player:"Erik",   team:"Sweden",       pct:14.17},
+  {player:"Hugo",   team:"Ivory Coast",  pct:12.35},
+  {player:"Nando",  team:"Paraguay",     pct:3.07},
+  {player:"Nick",   team:"Czechia",      pct:2.38},
+  {player:"Jeff",   team:"Ghana",        pct:1.85},
   {player:"Gat",    team:"Tunisia",      pct:0},
-  {player:"Diego",  team:"Iraq",         pct:0.13},
-  {player:"JG",     team:"Bosnia",       pct:0.24},
-  {player:"Pops",   team:"Saudi Arabia", pct:0.37},
-  {player:"Eddie",  team:"Cape Verde",   pct:1.42},
-  {player:"Danny",  team:"Curacao",      pct:0.28},
-  {player:"Jeff",   team:"Ghana",        pct:1.53},
+  {player:"Diego",  team:"Iraq",         pct:0.17},
+  {player:"JG",     team:"Bosnia",       pct:0.28},
+  {player:"Pops",   team:"Saudi Arabia", pct:0.43},
+  {player:"Eddie",  team:"Cape Verde",   pct:1.72},
+  {player:"Danny",  team:"Curacao",      pct:0.36},
+  {player:"Jeff",   team:"Ghana",        pct:1.85},
   {player:"Vlad",   team:"Haiti",        pct:0},
-  {player:"Rafiki", team:"New Zealand",  pct:0.26},
-];
+  {player:"Rafiki", team:"New Zealand",  pct:0.32},
+  {player:"Marco",  team:"Panama",       pct:0},
 
 const roundProbs = {
   "France":      {grp:81.6,r32:57.0,r16:37.2,qf:24.0,sf:14.3,fin:14.3},
