@@ -90,8 +90,8 @@
   </div>
 
   <div class="section">
-    <div class="section-header"><div class="section-title">Bracket</div></div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Blue = top 24 pick &nbsp;·&nbsp; Green = bottom 24 pick &nbsp;·&nbsp; ⚡ = two drafted players facing each other.</div>
+    <div class="section-header"><div class="section-title">Knockout Bracket</div></div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Blue = Top 24 Pick &nbsp;·&nbsp; Green = Bottom 24 Pick &nbsp;·&nbsp; ⚡ Clash = Two players facing each other.</div>
     <div class="round-btns" id="bracket-nav"></div>
     <div style="font-size:12px;color:var(--muted);margin-bottom:12px;" id="bracket-desc"></div>
     <div id="bracket-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
@@ -233,7 +233,7 @@ const flagCodes = {
 
 const bracketRounds = [
   {
-    key:'r32', label:'Round of 32', desc:'Group stage complete — Round of 32',
+    key:'r32', label:'Round of 32', desc:'Round of 32',
     matches:[
       {id:'M73', a:'South Africa', b:'Canada'},
       {id:'M74', a:'Germany',      b:'Sweden'},
