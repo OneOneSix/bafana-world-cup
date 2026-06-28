@@ -118,7 +118,7 @@
 // ============================================================
 // ELIMINATIONS — update this list as teams get knocked out
 // ============================================================
-const eliminated = ["Haiti", "Turkey", "Tunisia", "Jordan", "Panama"];
+const eliminated = ["Haiti","Turkey","Tunisia","Jordan","Panama","Qatar","Scotland","Curacao","New Zealand","Czechia","Iraq","Uzbekistan","Saudi Arabia","South Korea","Iran","Uruguay"];
 
 const flags = {
   "France":"fr","Argentina":"ar","Spain":"es","England":"gb-eng","Portugal":"pt",
@@ -130,86 +130,87 @@ const flags = {
   "Curacao":"cw","Ghana":"gh","Haiti":"ht","New Zealand":"nz",
 };
 
-// Updated: June 24 2026 — 100,000 Monte Carlo sims based on actual matchday 2 standings
+// Updated: June 28 2026 — group stage complete — 100,000 Monte Carlo sims from R32
 const topPrize = [
-  {player:"Vlad",   team:"France",      pct:18.63},
-  {player:"Nando",  team:"Argentina",   pct:15.74},
-  {player:"Gat",    team:"Spain",       pct:14.72},
-  {player:"Chill",  team:"England",     pct:10.94},
-  {player:"Rafiki", team:"Portugal",    pct:6.65},
-  {player:"Eddie",  team:"Germany",     pct:6.47},
-  {player:"Pops",   team:"Morocco",     pct:6.08},
-  {player:"Danny",  team:"Netherlands", pct:5.17},
-  {player:"Erik",   team:"Belgium",     pct:3.98},
-  {player:"Josue",  team:"Japan",       pct:3.95},
-  {player:"Hugo",   team:"Switzerland", pct:2.72},
-  {player:"Marco",  team:"Uruguay",     pct:2.33},
-  {player:"Nick",   team:"South Korea", pct:0.98},
-  {player:"Jeff",   team:"Ecuador",     pct:0.63},
-  {player:"JG",     team:"Australia",   pct:0.62},
-  {player:"Diego",  team:"Senegal",     pct:0.39},
+  {player:"Vlad",   team:"France",      pct:20.30},
+  {player:"Nando",  team:"Argentina",   pct:19.06},
+  {player:"Gat",    team:"Spain",       pct:13.24},
+  {player:"Chill",  team:"England",     pct:12.88},
+  {player:"Eddie",  team:"Germany",     pct:7.52},
+  {player:"Erik",   team:"Belgium",     pct:4.96},
+  {player:"Pops",   team:"Morocco",     pct:4.74},
+  {player:"Danny",  team:"Netherlands", pct:4.69},
+  {player:"Rafiki", team:"Portugal",    pct:4.43},
+  {player:"Diego",  team:"Senegal",     pct:2.71},
+  {player:"Josue",  team:"Japan",       pct:1.88},
+  {player:"Hugo",   team:"Switzerland", pct:1.71},
+  {player:"Jeff",   team:"Ecuador",     pct:1.01},
+  {player:"JG",     team:"Australia",   pct:0.87},
+  {player:"Nick",   team:"South Korea", pct:0},
+  {player:"Marco",  team:"Uruguay",     pct:0},
   {player:"Snappy", team:"Turkey",      pct:0},
 ];
 
 const botPrize = [
-  {player:"Josue",  team:"Egypt",        pct:28.43},
-  {player:"Snappy", team:"Canada",       pct:18.02},
-  {player:"Chill",  team:"Algeria",      pct:16.44},
-  {player:"Erik",   team:"Sweden",       pct:14.17},
-  {player:"Hugo",   team:"Ivory Coast",  pct:12.35},
-  {player:"Nando",  team:"Paraguay",     pct:3.07},
-  {player:"Nick",   team:"Czechia",      pct:2.38},
-  {player:"Jeff",   team:"Ghana",        pct:1.85},
-  {player:"Eddie",  team:"Cape Verde",   pct:1.72},
-  {player:"Pops",   team:"Saudi Arabia", pct:0.43},
-  {player:"Danny",  team:"Curacao",      pct:0.36},
-  {player:"Rafiki", team:"New Zealand",  pct:0.32},
-  {player:"JG",     team:"Bosnia",       pct:0.28},
-  {player:"Diego",  team:"Iraq",         pct:0.17},
+  {player:"Snappy", team:"Canada",       pct:35.85},
+  {player:"Josue",  team:"Egypt",        pct:18.85},
+  {player:"Hugo",   team:"Ivory Coast",  pct:14.03},
+  {player:"Chill",  team:"Algeria",      pct:12.30},
+  {player:"Erik",   team:"Sweden",       pct:9.11},
+  {player:"Nando",  team:"Paraguay",     pct:4.57},
+  {player:"JG",     team:"Bosnia",       pct:2.38},
+  {player:"Jeff",   team:"Ghana",        pct:1.74},
+  {player:"Eddie",  team:"Cape Verde",   pct:1.17},
+  {player:"Rafiki", team:"New Zealand",  pct:0},
+  {player:"Nick",   team:"Czechia",      pct:0},
   {player:"Marco",  team:"Panama",       pct:0},
   {player:"Gat",    team:"Tunisia",      pct:0},
+  {player:"Danny",  team:"Curacao",      pct:0},
   {player:"Vlad",   team:"Haiti",        pct:0},
+  {player:"Diego",  team:"Iraq",         pct:0},
+  {player:"Pops",   team:"Saudi Arabia", pct:0},
 ];
 
 const roundProbs = {
-  "France":      {grp:81.6,r32:57.0,r16:37.2,qf:24.0,sf:14.3,fin:14.3},
-  "Argentina":   {grp:69.6,r32:50.0,r16:33.9,qf:21.2,sf:13.0,fin:13.0},
-  "Spain":       {grp:68.9,r32:46.1,r16:32.0,qf:20.2,sf:12.3,fin:12.3},
-  "England":     {grp:64.2,r32:41.7,r16:24.4,qf:14.5,sf:8.2, fin:8.2 },
-  "Germany":     {grp:69.3,r32:41.7,r16:20.6,qf:10.0,sf:4.6, fin:4.6 },
-  "Netherlands": {grp:57.5,r32:32.4,r16:19.8,qf:9.9, sf:4.8, fin:4.8 },
-  "Morocco":     {grp:58.7,r32:32.1,r16:19.6,qf:9.8, sf:4.8, fin:4.8 },
-  "Portugal":    {grp:56.0,r32:33.7,r16:17.9,qf:9.4, sf:4.8, fin:4.8 },
-  "Belgium":     {grp:60.4,r32:35.9,r16:17.1,qf:8.5, sf:4.1, fin:4.1 },
-  "Senegal":     {grp:63.5,r32:28.3,r16:13.4,qf:6.5, sf:2.8, fin:2.8 },
-  "Uruguay":     {grp:45.2,r32:23.6,r16:11.7,qf:5.0, sf:2.1, fin:2.1 },
-  "Switzerland": {grp:54.0,r32:23.3,r16:10.6,qf:4.3, sf:1.8, fin:1.8 },
-  "Japan":       {grp:46.9,r32:21.3,r16:10.8,qf:4.5, sf:1.9, fin:1.9 },
-  "Ecuador":     {grp:50.4,r32:22.0,r16:8.3, qf:2.9, sf:0.9, fin:0.9 },
-  "South Korea": {grp:44.1,r32:18.4,r16:6.3, qf:2.1, sf:0.7, fin:0.7 },
-  "Turkey":      {grp:39.1,r32:17.9,r16:6.5, qf:2.4, sf:0.8, fin:0.8 },
-  "Australia":   {grp:32.0,r32:12.9,r16:4.0, qf:1.3, sf:0.4, fin:0.4 },
-  "Algeria":     {grp:35.9,r32:13.9,r16:4.6, qf:1.4, sf:0.4, fin:0.4 },
-  "Canada":      {grp:37.0,r32:12.7,r16:3.9, qf:1.1, sf:0.3, fin:0.3 },
-  "Ivory Coast": {grp:34.6,r32:11.4,r16:3.0, qf:0.8, sf:0.2, fin:0.2 },
-  "Egypt":       {grp:29.9,r32:10.7,r16:3.4, qf:1.0, sf:0.3, fin:0.3 },
-  "Panama":      {grp:15.6,r32:4.9, r16:1.4, qf:0.4, sf:0.1, fin:0.1 },
-  "Czechia":     {grp:17.3,r32:4.7, r16:0.9, qf:0.2, sf:0.0, fin:0.0 },
-  "Sweden":      {grp:16.4,r32:4.6, r16:1.1, qf:0.2, sf:0.0, fin:0.0 },
-  "Paraguay":    {grp:11.6,r32:3.3, r16:0.7, qf:0.2, sf:0.0, fin:0.0 },
-  "Tunisia":     {grp:9.6, r32:2.0, r16:0.5, qf:0.1, sf:0.0, fin:0.0 },
-  "Iraq":        {grp:4.8, r32:0.8, r16:0.1, qf:0.0, sf:0.0, fin:0.0 },
-  "Bosnia":      {grp:3.7, r32:0.5, r16:0.1, qf:0.0, sf:0.0, fin:0.0 },
-  "Saudi Arabia":{grp:3.6, r32:0.6, r16:0.0, qf:0.0, sf:0.0, fin:0.0 },
-  "Cape Verde":  {grp:2.3, r32:0.3, r16:0.0, qf:0.0, sf:0.0, fin:0.0 },
-  "Curacao":     {grp:1.2, r32:0.1, r16:0.0, qf:0.0, sf:0.0, fin:0.0 },
-  "Ghana":       {grp:0.8, r32:0.1, r16:0.0, qf:0.0, sf:0.0, fin:0.0 },
-  "Haiti":       {grp:0.7, r32:0.1, r16:0.0, qf:0.0, sf:0.0, fin:0.0 },
-  "New Zealand": {grp:0.5, r32:0.0, r16:0.0, qf:0.0, sf:0.0, fin:0.0 },
+  "France":      {grp:100,r32:100,r16:57.0,qf:37.2,sf:24.0,fin:14.3},
+  "Argentina":   {grp:100,r32:100,r16:50.0,qf:33.9,sf:21.2,fin:13.0},
+  "Spain":       {grp:100,r32:100,r16:46.1,qf:32.0,sf:20.2,fin:12.3},
+  "England":     {grp:100,r32:100,r16:41.7,qf:24.4,sf:14.5,fin:8.2 },
+  "Germany":     {grp:100,r32:100,r16:41.7,qf:20.6,sf:10.0,fin:4.6 },
+  "Netherlands": {grp:100,r32:100,r16:32.4,qf:19.8,sf:9.9, fin:4.8 },
+  "Morocco":     {grp:100,r32:100,r16:32.1,qf:19.6,sf:9.8, fin:4.8 },
+  "Portugal":    {grp:100,r32:100,r16:33.7,qf:17.9,sf:9.4, fin:4.8 },
+  "Belgium":     {grp:100,r32:100,r16:35.9,qf:17.1,sf:8.5, fin:4.1 },
+  "Senegal":     {grp:100,r32:100,r16:28.3,qf:13.4,sf:6.5, fin:2.8 },
+  "Switzerland": {grp:100,r32:100,r16:23.3,qf:10.6,sf:4.3, fin:1.8 },
+  "Japan":       {grp:100,r32:100,r16:21.3,qf:10.8,sf:4.5, fin:1.9 },
+  "Ecuador":     {grp:100,r32:100,r16:22.0,qf:8.3, sf:2.9, fin:0.9 },
+  "Australia":   {grp:100,r32:100,r16:12.9,qf:4.0, sf:1.3, fin:0.4 },
+  "South Korea": {grp:100,r32:0,  r16:0,   qf:0,   sf:0,   fin:0   },
+  "Turkey":      {grp:0,  r32:0,  r16:0,   qf:0,   sf:0,   fin:0   },
+  "Uruguay":     {grp:100,r32:0,  r16:0,   qf:0,   sf:0,   fin:0   },
+  "Canada":      {grp:100,r32:100,r16:12.7,qf:3.9, sf:1.1, fin:0.3 },
+  "Egypt":       {grp:100,r32:100,r16:10.7,qf:3.4, sf:1.0, fin:0.3 },
+  "Ivory Coast": {grp:100,r32:100,r16:11.4,qf:3.0, sf:0.8, fin:0.2 },
+  "Algeria":     {grp:100,r32:100,r16:13.9,qf:4.6, sf:1.4, fin:0.4 },
+  "Sweden":      {grp:100,r32:100,r16:4.6, qf:1.1, sf:0.2, fin:0.0 },
+  "Paraguay":    {grp:100,r32:100,r16:3.3, qf:0.7, sf:0.2, fin:0.0 },
+  "Bosnia":      {grp:100,r32:100,r16:0.5, qf:0.1, sf:0.0, fin:0.0 },
+  "Ghana":       {grp:100,r32:100,r16:0.1, qf:0.0, sf:0.0, fin:0.0 },
+  "Cape Verde":  {grp:100,r32:100,r16:0.3, qf:0.0, sf:0.0, fin:0.0 },
+  "Tunisia":     {grp:0,  r32:0,  r16:0,   qf:0,   sf:0,   fin:0   },
+  "Iraq":        {grp:0,  r32:0,  r16:0,   qf:0,   sf:0,   fin:0   },
+  "Panama":      {grp:0,  r32:0,  r16:0,   qf:0,   sf:0,   fin:0   },
+  "Haiti":       {grp:0,  r32:0,  r16:0,   qf:0,   sf:0,   fin:0   },
+  "Jordan":      {grp:0,  r32:0,  r16:0,   qf:0,   sf:0,   fin:0   },
+  "Czechia":     {grp:100,r32:0,  r16:0,   qf:0,   sf:0,   fin:0   },
+  "New Zealand": {grp:100,r32:0,  r16:0,   qf:0,   sf:0,   fin:0   },
+  "Curacao":     {grp:100,r32:0,  r16:0,   qf:0,   sf:0,   fin:0   },
+  "Saudi Arabia":{grp:100,r32:0,  r16:0,   qf:0,   sf:0,   fin:0   },
+  "Iran":        {grp:100,r32:0,  r16:0,   qf:0,   sf:0,   fin:0   },
 };
 
 const roundDefs = [
-  {key:'grp',label:'Group stage'},
   {key:'r32',label:'Round of 32'},
   {key:'r16',label:'Round of 16'},
   {key:'qf', label:'Quarter-finals'},
@@ -312,8 +313,8 @@ function buildButtons(elId, which) {
 
 buildButtons('btns-top','top');
 buildButtons('btns-bot','bot');
-updateChart('top','grp');
-updateChart('bot','grp');
+updateChart('top','r32');
+updateChart('bot','r32');
 </script>
 </body>
 </html>
