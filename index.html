@@ -106,10 +106,10 @@
 // Losing team is automatically marked as eliminated
 // ============================================================
 const results = {
-  'M73': 'Canada',
-  'M74': 'Brazil',
-  'M75': 'Paraguay',
-  'M76': 'Morocco',
+  'M73': {winner:'Canada',   a:0, b:1},
+  'M74': {winner:'Brazil',   a:2, b:1},
+  'M75': {winner:'Paraguay', a:1, b:1, aPen:3, bPen:4},
+  'M76': {winner:'Morocco',  a:1, b:1, aPen:2, bPen:3},
 };
 
 // ============================================================
@@ -254,14 +254,14 @@ function resolveTeam(id) {
   if(!id) return null;
   const allR32Teams = bracketRounds[0].matches.flatMap(m=>[m.a,m.b]);
   if(allR32Teams.includes(id)) return id;
-  return results[id] || null;
+  return results[id]?.winner || null;
 }
 
 function getKnockoutEliminated() {
   const losers = [];
   const allMatches = bracketRounds.flatMap(r => r.matches);
   for(const match of allMatches) {
-    const winner = results[match.id];
+    const winner = results[match.id]?.winner;
     if(!winner) continue;
     const aName = resolveTeam(match.a);
     const bName = resolveTeam(match.b);
@@ -322,12 +322,12 @@ function buildList(elId, data, isTop) {
   });
 }
 
-function renderBracketTeam(rawId, winner) {
+function renderBracketTeam(rawId, winner, goals, pens) {
   const name = resolveTeam(rawId);
   const isTbd = !name;
   const info = name ? getDraftInfo(name) : null;
   const flagCode = name ? flagCodes[name] : null;
-  const isWinner = name && winner === name;
+  const isWinner = !!(name && winner && winner === name);
   const flagEl = flagCode
     ? `<img src="https://flagcdn.com/32x24/${flagCode}.png" alt="${name}" style="width:18px;height:13px;border-radius:1px;flex-shrink:0;">`
     : `<div style="width:18px;height:13px;background:var(--border);border-radius:1px;flex-shrink:0;"></div>`;
@@ -336,15 +336,20 @@ function renderBracketTeam(rawId, winner) {
         ? 'background:rgba(55,138,221,.15);color:#85B7EB;border:1px solid rgba(55,138,221,.3);'
         : 'background:rgba(29,158,117,.15);color:#5DCAA5;border:1px solid rgba(29,158,117,.3);')
     : '';
-  const tag = info ? `<span style="font-size:9px;padding:1px 5px;border-radius:3px;flex-shrink:0;${tagStyle}">${info.player}</span>` : '';
+  const tag = info ? `<span style="font-size:9px;padding:1px 5px;border-radius:3px;flex-shrink:0;white-space:nowrap;${tagStyle}">${info.player}</span>` : `<span style="width:0;"></span>`;
   const dot = isWinner
     ? `<div style="width:6px;height:6px;border-radius:50%;background:#00C27C;flex-shrink:0;"></div>`
     : `<div style="width:6px;flex-shrink:0;"></div>`;
   const nameColor = info ? (info.type==='top'?'color:#85B7EB;font-weight:500;':'color:#5DCAA5;font-weight:500;') : 'color:var(--text);';
   const winBg = isWinner ? 'background:rgba(0,194,124,0.06);' : '';
+  const scoreText = (goals !== null && goals !== undefined)
+    ? `${pens!==null&&pens!==undefined?`(${pens}) `:''}${goals}`
+    : '';
+  const scoreEl = `<span style="font-size:12px;font-family:var(--font-mono);color:${isWinner?'#00C27C':'var(--muted)'};font-weight:${isWinner?'600':'400'};width:38px;flex-shrink:0;text-align:right;">${scoreText}</span>`;
   return `<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;${winBg}">
     ${flagEl}
-    <span style="font-size:12px;flex:1;${isTbd?'color:var(--muted);font-style:italic;':nameColor}">${isTbd?'TBD':name}</span>
+    <span style="font-size:12px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;${isTbd?'color:var(--muted);font-style:italic;':nameColor}">${isTbd?'TBD':name}</span>
+    ${scoreEl}
     ${tag}${dot}
   </div>`;
 }
@@ -352,7 +357,8 @@ function renderBracketTeam(rawId, winner) {
 function renderBracketMatch(match) {
   const aName = resolveTeam(match.a);
   const bName = resolveTeam(match.b);
-  const winner = results[match.id] || null;
+  const r = results[match.id] || {};
+  const winner = r.winner || null;
   const clash = aName && bName && getDraftInfo(aName) && getDraftInfo(bName);
   const borderStyle = clash ? 'border:1px solid rgba(245,197,66,.6);' : 'border:1px solid var(--border);';
   const clashBadge = clash
@@ -363,9 +369,9 @@ function renderBracketMatch(match) {
     <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono);padding:4px 10px 3px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
       <span>${match.id}</span>${clashBadge}<span></span>
     </div>
-    ${renderBracketTeam(match.a, winner)}
+    ${renderBracketTeam(match.a, winner, r.a ?? null, r.aPen ?? null)}
     ${divider}
-    ${renderBracketTeam(match.b, winner)}
+    ${renderBracketTeam(match.b, winner, r.b ?? null, r.bPen ?? null)}
   </div>`;
 }
 
