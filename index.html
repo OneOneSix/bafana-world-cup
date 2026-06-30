@@ -345,12 +345,10 @@ function renderBracketTeam(rawId, winner, goals, pens) {
   const scoreText = (goals !== null && goals !== undefined)
     ? `${goals}${pens!==null&&pens!==undefined?` (${pens})`:''}`
     : '';
-  return `<div style="display:grid;grid-template-columns:18px 1fr 36px 60px 6px;align-items:center;gap:8px;padding:7px 10px;${winBg}">
+  return `<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;${winBg}">
     ${flagEl}
-    <span style="font-size:12px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;${isTbd?'color:var(--muted);font-style:italic;':nameColor}">${isTbd?'TBD':name}</span>
-    <span style="font-size:12px;text-align:center;font-family:var(--font-mono);color:${isWinner?'#00C27C':'var(--muted)'};font-weight:${isWinner?'600':'400'};">${scoreText}</span>
-    <span style="display:flex;justify-content:flex-end;">${tag}</span>
-    ${dot}
+    <span style="font-size:12px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;${isTbd?'color:var(--muted);font-style:italic;':nameColor}">${isTbd?'TBD':name}</span>
+    ${tag}${dot}
   </div>`;
 }
 
