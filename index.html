@@ -107,9 +107,9 @@
 // ============================================================
 const results = {
   'M73': {winner:'Canada',   a:0, b:1},
-  'M74': {winner:'Brazil',   a:2, b:1},
-  'M75': {winner:'Paraguay', a:1, b:1, aPen:3, bPen:4},
-  'M76': {winner:'Morocco',  a:1, b:1, aPen:2, bPen:3},
+  'M76': {winner:'Brazil',   a:2, b:1},
+  'M74': {winner:'Paraguay', a:1, b:1, aPen:3, bPen:4},
+  'M75': {winner:'Morocco',  a:1, b:1, aPen:2, bPen:3},
 };
 
 // ============================================================
@@ -327,30 +327,30 @@ function renderBracketTeam(rawId, winner, goals, pens) {
   const isTbd = !name;
   const info = name ? getDraftInfo(name) : null;
   const flagCode = name ? flagCodes[name] : null;
-  const isWinner = !!(name && winner && winner === name);
+  const isWinner = Boolean(name) && Boolean(winner) && name === winner;
   const flagEl = flagCode
-    ? `<img src="https://flagcdn.com/32x24/${flagCode}.png" alt="${name}" style="width:18px;height:13px;border-radius:1px;flex-shrink:0;">`
-    : `<div style="width:18px;height:13px;background:var(--border);border-radius:1px;flex-shrink:0;"></div>`;
+    ? `<img src="https://flagcdn.com/32x24/${flagCode}.png" alt="${name}" style="width:18px;height:13px;border-radius:1px;">`
+    : `<div style="width:18px;height:13px;background:var(--border);border-radius:1px;"></div>`;
   const tagStyle = info
     ? (info.type==='top'
         ? 'background:rgba(55,138,221,.15);color:#85B7EB;border:1px solid rgba(55,138,221,.3);'
         : 'background:rgba(29,158,117,.15);color:#5DCAA5;border:1px solid rgba(29,158,117,.3);')
     : '';
-  const tag = info ? `<span style="font-size:9px;padding:1px 5px;border-radius:3px;flex-shrink:0;white-space:nowrap;${tagStyle}">${info.player}</span>` : `<span style="width:0;"></span>`;
+  const tag = info ? `<span style="font-size:9px;padding:1px 5px;border-radius:3px;white-space:nowrap;${tagStyle}">${info.player}</span>` : '';
   const dot = isWinner
-    ? `<div style="width:6px;height:6px;border-radius:50%;background:#00C27C;flex-shrink:0;"></div>`
-    : `<div style="width:6px;flex-shrink:0;"></div>`;
+    ? `<div style="width:6px;height:6px;border-radius:50%;background:#00C27C;"></div>`
+    : `<div style="width:6px;"></div>`;
   const nameColor = info ? (info.type==='top'?'color:#85B7EB;font-weight:500;':'color:#5DCAA5;font-weight:500;') : 'color:var(--text);';
   const winBg = isWinner ? 'background:rgba(0,194,124,0.06);' : '';
   const scoreText = (goals !== null && goals !== undefined)
-    ? `${pens!==null&&pens!==undefined?`(${pens}) `:''}${goals}`
+    ? `${goals}${pens!==null&&pens!==undefined?` (${pens})`:''}`
     : '';
-  const scoreEl = `<span style="font-size:12px;font-family:var(--font-mono);color:${isWinner?'#00C27C':'var(--muted)'};font-weight:${isWinner?'600':'400'};width:38px;flex-shrink:0;text-align:right;">${scoreText}</span>`;
-  return `<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;${winBg}">
+  return `<div style="display:grid;grid-template-columns:18px 1fr 36px auto 6px;align-items:center;gap:8px;padding:7px 10px;${winBg}">
     ${flagEl}
-    <span style="font-size:12px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;${isTbd?'color:var(--muted);font-style:italic;':nameColor}">${isTbd?'TBD':name}</span>
-    ${scoreEl}
-    ${tag}${dot}
+    <span style="font-size:12px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;${isTbd?'color:var(--muted);font-style:italic;':nameColor}">${isTbd?'TBD':name}</span>
+    <span style="font-size:12px;text-align:right;font-family:var(--font-mono);color:${isWinner?'#00C27C':'var(--muted)'};font-weight:${isWinner?'600':'400'};">${scoreText}</span>
+    ${tag}
+    ${dot}
   </div>`;
 }
 
