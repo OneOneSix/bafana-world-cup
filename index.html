@@ -340,18 +340,16 @@ function renderBracketTeam(rawId, winner, goals, pens) {
         : 'background:rgba(29,158,117,.15);color:#5DCAA5;border:1px solid rgba(29,158,117,.3);')
     : '';
   const tag = info ? `<span style="font-size:9px;padding:1px 5px;border-radius:3px;white-space:nowrap;${tagStyle}">${info.player}</span>` : '';
-  const dot = isWinner
-    ? `<div style="width:6px;height:6px;border-radius:50%;background:#00C27C;"></div>`
-    : `<div style="width:6px;"></div>`;
+  const dot = '';
   const nameColor = 'color:var(--text);';
-  const winBg = isWinner ? 'background:linear-gradient(90deg, rgba(0,194,124,0.16), rgba(0,194,124,0.03));' : '';
+  const winBg = isWinner ? 'background:rgba(0,194,124,0.15);' : '';
   const scoreText = (goals !== null && goals !== undefined)
     ? `${goals}${pens!==null&&pens!==undefined?` (${pens})`:''}`
     : '';
   return `<div style="display:flex;align-items:center;gap:8px;padding:0 10px;flex:1;${winBg}">
     ${flagEl}
     <span style="font-size:12px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;${isTbd?'color:var(--muted);font-style:italic;':nameColor}">${isTbd?'TBD':name}</span>
-    ${tag}${dot}
+    ${tag}
   </div>`;
 }
 
