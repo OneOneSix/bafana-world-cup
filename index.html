@@ -89,14 +89,14 @@
 
   <div class="section">
     <div class="section-header"><div class="section-title">Knockout Bracket</div></div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Blue = Top 24 Pick &nbsp;·&nbsp; Green = Bottom 24 Pick &nbsp;·&nbsp; ⚡ Clash = Two players facing each other</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Blue = Top 24 Pick &nbsp;·&nbsp; Green = Bottom 24 Pick &nbsp;·&nbsp; ⚡ Clash = Two players facing each other.</div>
     <div class="round-btns" id="bracket-nav"></div>
     <div id="bracket-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
   </div>
 
 </div>
 
-<footer>Made with ❤️ by Adrian Hidalgo (YouBetterChill) · Last updated: July 1, 2026</footer>
+<footer>Made with ❤️ by Adrian Hidalgo (YouBetterChill) · Last updated: July 2, 2026</footer>
 
 <script>
 // ============================================================
@@ -112,6 +112,9 @@ const results = {
   'M77': {winner:'France',   a:3, b:0},
   'M78': {winner:'Norway',   a:1, b:2},
   'M79': {winner:'Mexico',   a:2, b:0},
+  'M80': {winner:'England',  a:2, b:1},
+  'M81': {winner:'USA',      a:2, b:0},
+  'M82': {winner:'Belgium',  a:3, b:2},
 };
 
 // ============================================================
@@ -153,16 +156,15 @@ const draftedBot = {
   "Tunisia":"Gat","Curacao":"Danny","Haiti":"Vlad","Iraq":"Diego","Saudi Arabia":"Pops",
 };
 const topPrize = [
-  {player:"Vlad",   team:"France",      pct:25.96},
-  {player:"Nando",  team:"Argentina",   pct:22.57},
-  {player:"Gat",    team:"Spain",       pct:13.51},
-  {player:"Chill",  team:"England",     pct:11.47},
-  {player:"Pops",   team:"Morocco",     pct:10.92},
-  {player:"Rafiki", team:"Portugal",    pct:4.53},
-  {player:"Erik",   team:"Belgium",     pct:4.46},
-  {player:"Diego",  team:"Senegal",     pct:2.84},
-  {player:"Hugo",   team:"Switzerland", pct:2.80},
-  {player:"JG",     team:"Australia",   pct:0.94},
+  {player:"Vlad",   team:"France",      pct:25.60},
+  {player:"Nando",  team:"Argentina",   pct:22.08},
+  {player:"Chill",  team:"England",     pct:13.17},
+  {player:"Gat",    team:"Spain",       pct:12.96},
+  {player:"Pops",   team:"Morocco",     pct:10.89},
+  {player:"Erik",   team:"Belgium",     pct:7.39},
+  {player:"Rafiki", team:"Portugal",    pct:4.46},
+  {player:"Hugo",   team:"Switzerland", pct:2.60},
+  {player:"JG",     team:"Australia",   pct:0.85},
   {player:"Eddie",  team:"Germany",     pct:0},
   {player:"Nick",   team:"South Korea", pct:0},
   {player:"Marco",  team:"Uruguay",     pct:0},
@@ -170,15 +172,16 @@ const topPrize = [
   {player:"Josue",  team:"Japan",       pct:0},
   {player:"Danny",  team:"Netherlands", pct:0},
   {player:"Jeff",   team:"Ecuador",     pct:0},
+  {player:"Diego",  team:"Senegal",     pct:0},
 ];
 const botPrize = [
-  {player:"Snappy", team:"Canada",       pct:39.74},
-  {player:"Nando",  team:"Paraguay",     pct:26.67},
-  {player:"Chill",  team:"Algeria",      pct:15.15},
-  {player:"Josue",  team:"Egypt",        pct:14.20},
-  {player:"JG",     team:"Bosnia",       pct:1.96},
-  {player:"Jeff",   team:"Ghana",        pct:1.36},
-  {player:"Eddie",  team:"Cape Verde",   pct:0.91},
+  {player:"Snappy", team:"Canada",       pct:40.54},
+  {player:"Nando",  team:"Paraguay",     pct:27.42},
+  {player:"Chill",  team:"Algeria",      pct:15.39},
+  {player:"Josue",  team:"Egypt",        pct:14.36},
+  {player:"Jeff",   team:"Ghana",        pct:1.38},
+  {player:"Eddie",  team:"Cape Verde",   pct:0.90},
+  {player:"JG",     team:"Bosnia",       pct:0},
   {player:"Rafiki", team:"New Zealand",  pct:0},
   {player:"Nick",   team:"Czechia",      pct:0},
   {player:"Marco",  team:"Panama",       pct:0},
