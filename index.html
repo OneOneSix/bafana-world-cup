@@ -328,10 +328,10 @@ function getEliminationInfo(team) {
     const stats = groupStageStats[team] || {pts:0, gd:0};
     return {round:'Group Stage', rank:0, pts:stats.pts, gd:stats.gd, fifa:fifaPointsRef[team]||1100};
   }
-  const allMatches = bracketRounds.flatMap(r => r.matches);
   for(const round of bracketRounds) {
     for(const match of round.matches) {
-      const winner = results[match.id]?.winner;
+      const r = results[match.id];
+      const winner = r?.winner;
       if(!winner) continue;
       const aName = resolveTeam(match.a);
       const bName = resolveTeam(match.b);
@@ -339,7 +339,17 @@ function getEliminationInfo(team) {
       if(loser === team) {
         const roundLabel = {r32:'Round of 32', r16:'Round of 16', qf:'Quarter-Finals', sf:'Semi-Finals', fin:'Runner-Up'}[round.key];
         const roundRank = {r32:1, r16:2, qf:3, sf:4, fin:5}[round.key];
-        return {round:roundLabel, rank:roundRank, pts:0, gd:0, fifa:fifaPointsRef[team]||1100};
+        // Goal difference from the loser's perspective (regular + ET), penalties as tiebreak fraction
+        const isA = aName === team;
+        const goalsFor = isA ? (r.a ?? 0) : (r.b ?? 0);
+        const goalsAgainst = isA ? (r.b ?? 0) : (r.a ?? 0);
+        let gd = goalsFor - goalsAgainst;
+        if(r.aPen != null && r.bPen != null) {
+          const penFor = isA ? r.aPen : r.bPen;
+          const penAgainst = isA ? r.bPen : r.aPen;
+          gd += (penFor - penAgainst) * 0.01; // tiny fractional tiebreak, doesn't override real GD
+        }
+        return {round:roundLabel, rank:roundRank, pts:0, gd, fifa:fifaPointsRef[team]||1100};
       }
     }
   }
