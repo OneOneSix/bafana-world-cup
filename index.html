@@ -130,6 +130,40 @@ const results = {
 // ============================================================
 const groupEliminated = ["Haiti","Turkey","Tunisia","Jordan","Panama","Qatar","Scotland","Curacao","New Zealand","Czechia","Iraq","Uzbekistan","Saudi Arabia","South Korea","Iran","Uruguay"];
 
+// Group stage stats for eliminated teams (pts, gd) — used to break ties in elimination order
+const groupStageStats = {
+  "South Korea":  {pts:3, gd:-1},
+  "Czechia":      {pts:1, gd:-4},
+  "Qatar":        {pts:1, gd:-8},
+  "Scotland":     {pts:3, gd:-3},
+  "Haiti":        {pts:0, gd:-6},
+  "Turkey":       {pts:3, gd:-2},
+  "Curacao":      {pts:1, gd:-8},
+  "Tunisia":      {pts:0, gd:-10},
+  "Iran":         {pts:3, gd:0},
+  "New Zealand":  {pts:1, gd:-6},
+  "Uruguay":      {pts:2, gd:-1},
+  "Saudi Arabia": {pts:2, gd:-4},
+  "Iraq":         {pts:0, gd:-11},
+  "Jordan":       {pts:0, gd:-5},
+  "Uzbekistan":   {pts:0, gd:-9},
+  "Panama":       {pts:0, gd:-4},
+};
+
+// FIFA points — fallback tiebreaker for knockout-round ties
+const fifaPointsRef = {
+  "France":1877,"Spain":1876,"Argentina":1875,"England":1826,"Portugal":1764,
+  "Brazil":1761,"Netherlands":1758,"Morocco":1756,"Belgium":1735,"Germany":1730,
+  "Croatia":1717,"Colombia":1693,"Senegal":1689,"Mexico":1681,"USA":1673,
+  "Uruguay":1673,"Japan":1660,"Switzerland":1649,"Iran":1609,"Turkey":1597,
+  "Ecuador":1585,"Austria":1573,"South Korea":1561,"Australia":1537,"Algeria":1525,
+  "Egypt":1513,"Canada":1501,"Norway":1489,"Panama":1465,"Ivory Coast":1453,
+  "Sweden":1405,"Paraguay":1381,"Czechia":1369,"Scotland":1345,"Tunisia":1333,
+  "Congo DR":1309,"Uzbekistan":1261,"Qatar":1225,"Iraq":1205,"South Africa":1185,
+  "Saudi Arabia":1165,"Jordan":1145,"Bosnia":1130,"Cape Verde":1100,"Ghana":1065,
+  "Haiti":1000,"Curacao":990,"New Zealand":970,
+};
+
 // ============================================================
 // DATA
 // ============================================================
@@ -288,6 +322,30 @@ function getAllEliminated() {
   return [...groupEliminated, ...getKnockoutEliminated()];
 }
 
+// Returns {round: label, rank: number (higher = further), pts, gd, fifa} for sorting/display
+function getEliminationInfo(team) {
+  if(groupEliminated.includes(team)) {
+    const stats = groupStageStats[team] || {pts:0, gd:0};
+    return {round:'Group Stage', rank:0, pts:stats.pts, gd:stats.gd, fifa:fifaPointsRef[team]||1100};
+  }
+  const allMatches = bracketRounds.flatMap(r => r.matches);
+  for(const round of bracketRounds) {
+    for(const match of round.matches) {
+      const winner = results[match.id]?.winner;
+      if(!winner) continue;
+      const aName = resolveTeam(match.a);
+      const bName = resolveTeam(match.b);
+      const loser = aName === winner ? bName : aName;
+      if(loser === team) {
+        const roundLabel = {r32:'Round of 32', r16:'Round of 16', qf:'Quarter-Finals', sf:'Semi-Finals', fin:'Runner-Up'}[round.key];
+        const roundRank = {r32:1, r16:2, qf:3, sf:4, fin:5}[round.key];
+        return {round:roundLabel, rank:roundRank, pts:0, gd:0, fifa:fifaPointsRef[team]||1100};
+      }
+    }
+  }
+  return null;
+}
+
 function getDraftInfo(name) {
   if(!name) return null;
   if(draftedTop[name]) return {player:draftedTop[name], type:'top'};
@@ -313,14 +371,25 @@ function buildList(elId, data, isTop) {
   const eliminated = getAllEliminated();
   const live = redistribute(data);
   live.sort((a,b) => {
-    if(a.livePct===0 && b.livePct>0) return 1;
-    if(b.livePct===0 && a.livePct>0) return -1;
+    const aOut = eliminated.includes(a.team);
+    const bOut = eliminated.includes(b.team);
+    if(aOut && bOut) {
+      const infoA = getEliminationInfo(a.team);
+      const infoB = getEliminationInfo(b.team);
+      if(infoB.rank !== infoA.rank) return infoB.rank - infoA.rank;
+      if(infoB.pts !== infoA.pts) return infoB.pts - infoA.pts;
+      if(infoB.gd !== infoA.gd) return infoB.gd - infoA.gd;
+      return infoB.fifa - infoA.fifa;
+    }
+    if(aOut && !bOut) return 1;
+    if(bOut && !aOut) return -1;
     return b.livePct - a.livePct;
   });
   const maxPct = live.find(d => d.livePct > 0)?.livePct || 1;
   live.forEach((d,i) => {
     const isOut = eliminated.includes(d.team);
     const pct = (d.livePct/maxPct*100);
+    const outLabel = isOut ? `${getEliminationInfo(d.team)?.round || 'Eliminated'}` : '';
     const row = document.createElement('div');
     row.className = 'player-row';
     row.innerHTML = `
@@ -329,7 +398,7 @@ function buildList(elId, data, isTop) {
       <span class="team-tag ${isTop?'tag-top':'tag-bot'} ${isOut?'eliminated':''}">${d.team} ${flags[d.team]?`<img src="https://flagcdn.com/32x24/${flags[d.team]}.png" alt="${d.team}" style="vertical-align:middle;margin-left:3px;border-radius:1px;width:16px;height:12px;">`:''}</span>
       <div class="bar-wrap">
         <div class="bar-bg"><div class="bar-fill" style="width:${isOut?0:pct.toFixed(1)}%;background:${isOut?'#444':barCol(i)};"></div></div>
-        <div class="bar-val ${isOut?'eliminated':''}">${isOut?'eliminated':d.livePct.toFixed(2)+'%'}</div>
+        <div class="bar-val ${isOut?'eliminated':''}" style="${isOut?'white-space:nowrap;min-width:auto;':''}">${isOut?outLabel:d.livePct.toFixed(2)+'%'}</div>
       </div>`;
     el.appendChild(row);
   });
