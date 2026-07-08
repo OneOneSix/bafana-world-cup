@@ -96,7 +96,7 @@
 
 </div>
 
-<footer>Made with ❤️ by Adrian Hidalgo (YouBetterChill) · Last updated: July 6, 2026</footer>
+<footer>Made with ❤️ by Adrian Hidalgo (YouBetterChill) · Last updated: July 7, 2026</footer>
 
 <script>
 // ============================================================
@@ -127,6 +127,8 @@ const results = {
   'M92': {winner:'England',     a:2, b:3},
   'M93': {winner:'Spain',       a:0, b:1},
   'M94': {winner:'Belgium',     a:1, b:4},
+  'M95': {winner:'Argentina',   a:3, b:2},
+  'M96': {winner:'Switzerland', a:0, b:0, aPen:4, bPen:3},
 };
 
 // ============================================================
@@ -202,13 +204,13 @@ const draftedBot = {
   "Tunisia":"Gat","Curacao":"Danny","Haiti":"Vlad","Iraq":"Diego","Saudi Arabia":"Pops",
 };
 const topPrize = [
-  {player:"Vlad",   team:"France",      pct:21.72},
-  {player:"Chill",  team:"England",     pct:21.24},
-  {player:"Gat",    team:"Spain",       pct:21.14},
-  {player:"Nando",  team:"Argentina",   pct:16.75},
-  {player:"Pops",   team:"Morocco",     pct:9.52},
-  {player:"Erik",   team:"Belgium",     pct:7.63},
-  {player:"Hugo",   team:"Switzerland", pct:1.99},
+  {player:"Nando",  team:"Argentina",   pct:21.69},
+  {player:"Vlad",   team:"France",      pct:20.19},
+  {player:"Gat",    team:"Spain",       pct:20.02},
+  {player:"Chill",  team:"England",     pct:19.23},
+  {player:"Pops",   team:"Morocco",     pct:8.32},
+  {player:"Erik",   team:"Belgium",     pct:6.77},
+  {player:"Hugo",   team:"Switzerland", pct:3.77},
   {player:"Rafiki", team:"Portugal",    pct:0},
   {player:"Eddie",  team:"Germany",     pct:0},
   {player:"Nick",   team:"South Korea", pct:0},
@@ -221,16 +223,16 @@ const topPrize = [
   {player:"Diego",  team:"Senegal",     pct:0},
 ];
 const botPrize = [
-  {player:"Josue",  team:"Egypt",        pct:100},
+  {player:"Josue",  team:"Egypt",        pct:33.34},
+  {player:"Snappy", team:"Canada",       pct:33.33},
+  {player:"Nando",  team:"Paraguay",     pct:33.33},
   {player:"Rafiki", team:"New Zealand",  pct:0},
   {player:"Eddie",  team:"Cape Verde",   pct:0},
   {player:"Nick",   team:"Czechia",      pct:0},
   {player:"Chill",  team:"Algeria",      pct:0},
   {player:"Marco",  team:"Panama",       pct:0},
   {player:"Hugo",   team:"Ivory Coast",  pct:0},
-  {player:"Snappy", team:"Canada",       pct:0},
   {player:"Erik",   team:"Sweden",       pct:0},
-  {player:"Nando",  team:"Paraguay",     pct:0},
   {player:"Gat",    team:"Tunisia",      pct:0},
   {player:"JG",     team:"Bosnia",       pct:0},
   {player:"Danny",  team:"Curacao",      pct:0},
@@ -360,6 +362,17 @@ function getEliminationInfo(team) {
   return null;
 }
 
+// Returns array of team names that are tied co-winners of a prize (all contenders eliminated, tied for furthest round)
+function getPrizeWinners(data) {
+  const eliminated = getAllEliminated();
+  const stillAlive = data.some(d => !eliminated.includes(d.team));
+  if(stillAlive) return [];
+  let maxRank = -1;
+  const withInfo = data.map(d => ({team:d.team, info:getEliminationInfo(d.team)}));
+  withInfo.forEach(x => { if(x.info && x.info.rank > maxRank) maxRank = x.info.rank; });
+  return withInfo.filter(x => x.info && x.info.rank === maxRank).map(x => x.team);
+}
+
 function getDraftInfo(name) {
   if(!name) return null;
   if(draftedTop[name]) return {player:draftedTop[name], type:'top'};
@@ -383,8 +396,13 @@ function redistribute(data) {
 function buildList(elId, data, isTop) {
   const el = document.getElementById(elId);
   const eliminated = getAllEliminated();
+  const prizeWinners = getPrizeWinners(data);
   const live = redistribute(data);
   live.sort((a,b) => {
+    const aWin = prizeWinners.includes(a.team);
+    const bWin = prizeWinners.includes(b.team);
+    if(aWin && !bWin) return -1;
+    if(bWin && !aWin) return 1;
     const aOut = eliminated.includes(a.team);
     const bOut = eliminated.includes(b.team);
     if(aOut && bOut) {
@@ -402,17 +420,21 @@ function buildList(elId, data, isTop) {
   const maxPct = live.find(d => d.livePct > 0)?.livePct || 1;
   live.forEach((d,i) => {
     const isOut = eliminated.includes(d.team);
+    const isWinner = prizeWinners.includes(d.team);
     const pct = (d.livePct/maxPct*100);
     const outLabel = isOut ? `${getEliminationInfo(d.team)?.round || 'Eliminated'}` : '';
+    const valColor = isWinner ? '#00C27C' : 'rgba(255,75,75,0.6)';
+    const barColor = isWinner ? '#00C27C' : '#444';
+    const barWidth = isWinner ? 100 : 0;
     const row = document.createElement('div');
     row.className = 'player-row';
     row.innerHTML = `
-      <div class="rank-badge ${isOut?'bot-badge':badgeClass(i)}">${isOut?'—':i+1}</div>
-      <div class="player-name ${isOut?'eliminated':''}">${d.player}</div>
+      <div class="rank-badge ${isWinner?'top-badge':(isOut?'bot-badge':badgeClass(i))}">${isWinner?'🏆':(isOut?'—':i+1)}</div>
+      <div class="player-name ${isOut?'eliminated':''}" ${isWinner?'style="color:#00C27C;text-decoration:none;font-weight:600;"':''}>${d.player}</div>
       <span class="team-tag ${isTop?'tag-top':'tag-bot'} ${isOut?'eliminated':''}">${d.team} ${flags[d.team]?`<img src="https://flagcdn.com/32x24/${flags[d.team]}.png" alt="${d.team}" style="vertical-align:middle;margin-left:3px;border-radius:1px;width:16px;height:12px;">`:''}</span>
       <div class="bar-wrap">
-        <div class="bar-bg"><div class="bar-fill" style="width:${isOut?0:pct.toFixed(1)}%;background:${isOut?'#444':barCol(i)};"></div></div>
-        <div class="bar-val ${isOut?'eliminated':''}" style="${isOut?'white-space:nowrap;min-width:auto;':''}">${isOut?outLabel:d.livePct.toFixed(2)+'%'}</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${isOut?barWidth:pct.toFixed(1)}%;background:${isOut?barColor:barCol(i)};"></div></div>
+        <div class="bar-val" style="${isOut?`color:${valColor};white-space:nowrap;min-width:auto;`:''}">${isOut?outLabel:d.livePct.toFixed(2)+'%'}</div>
       </div>`;
     el.appendChild(row);
   });
