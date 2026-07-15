@@ -96,7 +96,7 @@
 
 </div>
 
-<footer>Made with ❤️ by Adrian Hidalgo (YouBetterChill) · Last updated: July 10, 2026</footer>
+<footer>Made with ❤️ by Adrian Hidalgo (YouBetterChill) · Last updated: July 14, 2026</footer>
 
 <script>
 // ============================================================
@@ -131,6 +131,9 @@ const results = {
   'M96': {winner:'Switzerland', a:0, b:0, aPen:4, bPen:3},
   'M97': {winner:'France',      a:2, b:0},
   'M98': {winner:'Spain',       a:2, b:1},
+  'M99': {winner:'England',     a:1, b:2},
+  'M100': {winner:'Argentina',  a:3, b:1},
+  'M101': {winner:'Spain',      a:0, b:2},
 };
 
 // ============================================================
@@ -206,11 +209,11 @@ const draftedBot = {
   "Tunisia":"Gat","Curacao":"Danny","Haiti":"Vlad","Iraq":"Diego","Saudi Arabia":"Pops",
 };
 const topPrize = [
-  {player:"Vlad",   team:"France",      pct:31.60},
-  {player:"Gat",    team:"Spain",       pct:30.35},
-  {player:"Nando",  team:"Argentina",   pct:18.61},
-  {player:"Chill",  team:"England",     pct:16.55},
-  {player:"Hugo",   team:"Switzerland", pct:2.89},
+  {player:"Gat",    team:"Spain",       pct:52.19},
+  {player:"Nando",  team:"Argentina",   pct:27.29},
+  {player:"Chill",  team:"England",     pct:20.53},
+  {player:"Vlad",   team:"France",      pct:0},
+  {player:"Hugo",   team:"Switzerland", pct:0},
   {player:"Erik",   team:"Belgium",     pct:0},
   {player:"Pops",   team:"Morocco",     pct:0},
   {player:"Rafiki", team:"Portugal",    pct:0},
@@ -290,8 +293,8 @@ const bracketRounds = [
   {
     key:'sf', label:'Semi-finals', desc:'Semi-finals',
     matches:[
-      {id:'M101', a:'M97', b:'M99'},
-      {id:'M102', a:'M98', b:'M100'},
+      {id:'M101', a:'M97', b:'M98'},
+      {id:'M102', a:'M99', b:'M100'},
     ]
   },
   {
