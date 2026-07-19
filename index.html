@@ -96,7 +96,7 @@
 
 </div>
 
-<footer>Made with ❤️ by Adrian Hidalgo (YouBetterChill) · Last updated: July 14, 2026</footer>
+<footer>Made with ❤️ by Adrian Hidalgo (YouBetterChill) · Last updated: July 19, 2026</footer>
 
 <script>
 // ============================================================
@@ -134,6 +134,8 @@ const results = {
   'M99': {winner:'England',     a:1, b:2},
   'M100': {winner:'Argentina',  a:3, b:1},
   'M101': {winner:'Spain',      a:0, b:2},
+  'M102': {winner:'Argentina',  a:1, b:2},
+  'M104': {winner:'Spain',      a:1, b:0},
 };
 
 // ============================================================
@@ -209,9 +211,9 @@ const draftedBot = {
   "Tunisia":"Gat","Curacao":"Danny","Haiti":"Vlad","Iraq":"Diego","Saudi Arabia":"Pops",
 };
 const topPrize = [
-  {player:"Gat",    team:"Spain",       pct:52.19},
-  {player:"Nando",  team:"Argentina",   pct:27.29},
-  {player:"Chill",  team:"England",     pct:20.53},
+  {player:"Gat",    team:"Spain",       pct:100},
+  {player:"Nando",  team:"Argentina",   pct:0},
+  {player:"Chill",  team:"England",     pct:0},
   {player:"Vlad",   team:"France",      pct:0},
   {player:"Hugo",   team:"Switzerland", pct:0},
   {player:"Erik",   team:"Belgium",     pct:0},
@@ -335,6 +337,9 @@ function getAllEliminated() {
 
 // Returns {round: label, rank: number (higher = further), pts, gd, fifa} for sorting/display
 function getEliminationInfo(team) {
+  // Third-place playoff overrides — England beat France 6-4
+  if(team === 'England') return {round:'3rd Place', rank:4.5, pts:0, gd:0, fifa:fifaPointsRef[team]||1100};
+  if(team === 'France') return {round:'4th Place', rank:4.4, pts:0, gd:0, fifa:fifaPointsRef[team]||1100};
   if(groupEliminated.includes(team)) {
     const stats = groupStageStats[team] || {pts:0, gd:0};
     return {round:'Group Stage', rank:0, pts:stats.pts, gd:stats.gd, fifa:fifaPointsRef[team]||1100};
@@ -402,8 +407,12 @@ function buildList(elId, data, isTop) {
   const el = document.getElementById(elId);
   const eliminated = getAllEliminated();
   const prizeWinners = getPrizeWinners(data);
+  const champion = results['M104']?.winner || null;
   const live = redistribute(data);
   live.sort((a,b) => {
+    const aChamp = a.team === champion, bChamp = b.team === champion;
+    if(aChamp && !bChamp) return -1;
+    if(bChamp && !aChamp) return 1;
     const aWin = prizeWinners.includes(a.team);
     const bWin = prizeWinners.includes(b.team);
     if(aWin && !bWin) return -1;
@@ -426,20 +435,21 @@ function buildList(elId, data, isTop) {
   live.forEach((d,i) => {
     const isOut = eliminated.includes(d.team);
     const isWinner = prizeWinners.includes(d.team);
+    const isChamp = d.team === champion;
     const pct = (d.livePct/maxPct*100);
-    const outLabel = isOut ? `${getEliminationInfo(d.team)?.round || 'Eliminated'}` : '';
-    const valColor = isWinner ? '#00C27C' : 'rgba(255,75,75,0.6)';
-    const barColor = isWinner ? '#00C27C' : '#444';
-    const barWidth = isWinner ? 100 : 0;
+    const outLabel = isChamp ? 'Champion' : (isOut ? `${getEliminationInfo(d.team)?.round || 'Eliminated'}` : '');
+    const valColor = (isWinner || isChamp) ? '#00C27C' : 'rgba(255,75,75,0.6)';
+    const barColor = (isWinner || isChamp) ? '#00C27C' : '#444';
+    const barWidth = (isWinner || isChamp) ? 100 : 0;
     const row = document.createElement('div');
     row.className = 'player-row';
     row.innerHTML = `
-      <div class="rank-badge ${isWinner?'top-badge':(isOut?'bot-badge':badgeClass(i))}">${isWinner?'🏆':(isOut?'—':i+1)}</div>
-      <div class="player-name ${isOut?'eliminated':''}" ${isWinner?'style="color:#00C27C;text-decoration:none;font-weight:600;"':''}>${d.player}</div>
-      <span class="team-tag ${isTop?'tag-top':'tag-bot'} ${isOut?'eliminated':''}">${d.team} ${flags[d.team]?`<img src="https://flagcdn.com/32x24/${flags[d.team]}.png" alt="${d.team}" style="vertical-align:middle;margin-left:3px;border-radius:1px;width:16px;height:12px;">`:''}</span>
+      <div class="rank-badge ${(isWinner||isChamp)?'top-badge':(isOut?'bot-badge':badgeClass(i))}">${(isWinner||isChamp)?'🏆':(isOut?'—':i+1)}</div>
+      <div class="player-name ${isOut?'eliminated':''}" ${(isWinner||isChamp)?'style="color:#00C27C;text-decoration:none;font-weight:600;"':''}>${d.player}</div>
+      <span class="team-tag ${isTop?'tag-top':'tag-bot'} ${isOut&&!isChamp?'eliminated':''}">${d.team} ${flags[d.team]?`<img src="https://flagcdn.com/32x24/${flags[d.team]}.png" alt="${d.team}" style="vertical-align:middle;margin-left:3px;border-radius:1px;width:16px;height:12px;">`:''}</span>
       <div class="bar-wrap">
-        <div class="bar-bg"><div class="bar-fill" style="width:${isOut?barWidth:pct.toFixed(1)}%;background:${isOut?barColor:barCol(i)};"></div></div>
-        <div class="bar-val" style="${isOut?`color:${valColor};white-space:nowrap;min-width:auto;`:''}">${isOut?outLabel:d.livePct.toFixed(2)+'%'}</div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${(isOut||isChamp)?barWidth:pct.toFixed(1)}%;background:${(isOut||isChamp)?barColor:barCol(i)};"></div></div>
+        <div class="bar-val" style="${(isOut||isChamp)?`color:${valColor};white-space:nowrap;min-width:auto;`:''}">${(isOut||isChamp)?outLabel:d.livePct.toFixed(2)+'%'}</div>
       </div>`;
     el.appendChild(row);
   });
@@ -494,7 +504,7 @@ function renderBracketMatch(match) {
   </div>`;
 }
 
-let activeBracketRound = 'sf';
+let activeBracketRound = 'fin';
 
 function renderBracket() {
   const round = bracketRounds.find(r=>r.key===activeBracketRound);
